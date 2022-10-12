@@ -53,6 +53,7 @@ fn main() {
     print_title();
 
     let mut guessed_histories: Vec<Vec<(char, LetterStatus)>> = Vec::new();
+    let mut passed = false;
 
     loop {
         for history in &guessed_histories {
@@ -69,11 +70,24 @@ fn main() {
                     }
                 }
             }
+
+            if history
+                .iter()
+                .all(|(_, status)| matches!(status, LetterStatus::Collect))
+            {
+                passed = true;
+            }
+
             print_line_break();
         }
 
         for _ in 0..MAX_PROMPT_COUNT - guessed_histories.len() {
             print_empty();
+        }
+
+        if passed {
+            println!("{}", "Congratulations!!");
+            break;
         }
 
         if guessed_histories.len() > 5 {
@@ -82,7 +96,7 @@ fn main() {
         }
 
         println!(
-            "Guess a five-letter word! {}/{}",
+            "Guess a five-letter word! {}/{} ",
             guessed_histories.len() + 1,
             MAX_PROMPT_COUNT
         );
@@ -107,23 +121,6 @@ fn main() {
                 // wrong
                 colored_letters.push((guessed_letter, LetterStatus::Wrong));
             }
-        }
-
-        if colored_letters
-            .iter()
-            .all(|(_, status)| matches!(status, LetterStatus::Collect))
-        {
-            println!(
-                "{}",
-                guessed_word
-                    .to_uppercase()
-                    .trim_end()
-                    .white()
-                    .on_truecolor(GREEN.0, GREEN.1, GREEN.2)
-            );
-
-            println!("{}", "Congratulations!!");
-            break;
         }
 
         guessed_histories.push(colored_letters);
