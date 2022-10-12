@@ -1,4 +1,4 @@
-# TERMIDLE
+# Termidle
 
 Wordle running in a terminal written in Rust
 
